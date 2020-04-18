@@ -6,18 +6,18 @@ const {
     // RootNode,
     // Artboard,
     Rectangle,
-    // Ellipse,
+    Ellipse,
     // Polygon,
     // Line,
-    // Path,
+    Path,
     // BooleanGroup,
     Text
 } = require('scenegraph');
 const { standardizeString } = require('./standardize-string');
 const { getStylesForRectangle } = require('./parse-rectangle');
+const { getStylesForEllipse } = require('./parse-ellipse');
 const { getStylesForText } = require('./parse-text');
-// const { parseSVG } = require('./parse-svg');
-const { typografText } = require('../libs/typograf');
+const { getStylesForPath } = require('./parse-path');
 
 const parseLayers = (xdNode, domArray, componentName, options) => {
     const arrayOfPromises = [];
@@ -34,7 +34,6 @@ const parseLayers = (xdNode, domArray, componentName, options) => {
 
         const nodeObject = {
             attributes: {
-                styles: {}
             },
             childrens: []
         };
@@ -46,12 +45,9 @@ const parseLayers = (xdNode, domArray, componentName, options) => {
             canPlace = true;
 
             let promise;
-
             // export svg as inline-svg
             if (classElementName.indexOf('__svg') === 0) {
-                // promise = parseSVG(xdNode).then(html => {
-                //     nodeObject.attributes.html = html;
-                // });
+                nodeObject.attributes.icon = xdNode;
             } else {
                 promise = parseLayers(xdNode, nodeObject.childrens, componentName, options).then(domArray2 => {
                     nodeObject.childrens = domArray2;
@@ -60,6 +56,7 @@ const parseLayers = (xdNode, domArray, componentName, options) => {
 
             arrayOfPromises.push(promise);
         }
+
 
         // insert the component in the component as a component <componentName />
         else if (xdNode instanceof SymbolInstance) {
@@ -73,9 +70,19 @@ const parseLayers = (xdNode, domArray, componentName, options) => {
             nodeObject.attributes.styles = getStylesForRectangle(xdNode);
         }
 
+        else if (xdNode instanceof Ellipse) {
+            canPlace = true;
+            nodeObject.attributes.styles = getStylesForEllipse(xdNode);
+        }
+
         else if (xdNode instanceof Text) {
             canPlace = true;
             nodeObject.attributes.styles = getStylesForText(xdNode);
+        }
+
+        else if (xdNode instanceof Path) {
+            canPlace = true;
+            nodeObject.attributes.icon = getStylesForPath(xdNode);
         }
 
         if (canPlace) {

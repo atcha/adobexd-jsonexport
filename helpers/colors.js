@@ -10,7 +10,7 @@ const getColorName = color => {
 
         color.colorStops.forEach(color2 => {
             const tempColor = color2.color;
-            let desiredColor = tempColor.toRgba(); // false - means get 3 chars if possible
+            let desiredColor = tempColor.toHex(false); // false - means get 3 chars if possible
             if (tempColor.a < 255) {
                 desiredColor = `rgba(${ desiredColor }, ${ parseFloat(tempColor.a / 255).toFixed(2) })`;
             }
@@ -22,7 +22,7 @@ const getColorName = color => {
 
         return `linear-gradient(90deg, ${ gradientArray.join(', ') })`;
     } else {
-        let desiredColor = color.toRgba(); // false - means get 3 chars if possible
+        let desiredColor = color.toHex(false); // false - means get 3 chars if possible
         if (color.a < 255) {
             desiredColor = `rgba(${ desiredColor }, ${ parseFloat(color.a / 255).toFixed(2) })`;
         }

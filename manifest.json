@@ -15,9 +15,9 @@
     "height" : 48
   } ],
   "uiEntryPoints" : [ {
-    "label" : "Create Rectangle",
+    "label" : "Export json",
     "type" : "menu",
-    "commandId" : "createRectangle"
+    "commandId" : "exportAssets"
   } ],
   "version" : "0.0.1"
 }
